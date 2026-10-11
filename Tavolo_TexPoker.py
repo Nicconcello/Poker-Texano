@@ -51,6 +51,49 @@ frame_banco.pack(expand=True, anchor=tk.CENTER)
 frame_banco.pack_propagate(False)
 
 
+# Creo i 4 frame per i 4 possibili giocatori
+frame_sotto = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=600, height=250)
+frame_sotto.place(relx=0.5, rely=1.0, anchor=tk.S)
+frame_sotto.pack_propagate(False)
+
+
+frame_sopra = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=600, height=250)
+frame_sopra.place(relx=0.5, rely=0.0, anchor=tk.N)
+frame_sopra.pack_propagate(False)
+
+
+frame_sinistro = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=250, height=600)
+frame_sinistro.place(relx=0.0, rely=0.5, anchor=tk.W)
+frame_sinistro.pack_propagate(False)
+
+
+frame_destro = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=250, height=600)
+frame_destro.place(relx=1.0, rely=0.5, anchor=tk.E)
+frame_destro.pack_propagate(False)
+
+
+# Creo il bottone per la puntata
+bottone_puntata = tk.Button(mio_frame, text="PUNTA", width=15, font=("Arial", 12, "bold"), bg="orange")
+bottone_puntata.place(relx=0.99, rely=0.99, anchor=tk.SE)
+
+
+# Funzione di dominio della puntata
+def controlla_puntata(testo):
+    if testo == "":
+        return True
+    elif testo.isdigit():
+        return True
+    else:
+        return False
+
+# Tkinter ha bisogno che questa funzione venga "registrata" per poterla usare dentro un widget
+validazione_puntata = root.register(controlla_puntata)
+
+
+# Creo l'area di testo dove scrivere la puntata
+testo_bet = tk.Entry(mio_frame, width=10, font=("Arial", 14), justify="center", validate="key", validatecommand=(validazione_puntata, '%P'))
+testo_bet.place(relx=0.01, rely=0.99, anchor=tk.SW)
+
 """
 def ascolta_server():
     global carta_coperta_label
