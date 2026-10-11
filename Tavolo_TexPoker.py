@@ -136,22 +136,14 @@ def ascolta_server():
                 print(f"MSG: {msg}") # Debug
                 
                 # --- GESTIONE CARTA GIOCATORE ---
-                if "CARTA:" in msg or "CARTA_DX:" in msg or "CARTA_SX:" in msg:
+                if "CARTA:" in msg:
                     # Passa alla grafica di gioco (in sicurezza)
                     root.after(0, mostra_fase_gioco)
                     
-                    frame_dest = carte_playerD # Default
+                    frame_dest = frame_sotto
                     nome = ""
                     
-                    if "CARTA_DX:" in msg:
-                        nome = msg.replace("CARTA_DX:", "")
-                        frame_dest = carte_playerD
-                    elif "CARTA_SX:" in msg:
-                        nome = msg.replace("CARTA_SX:", "")
-                        frame_dest = carte_playerS
-                    else:
-                        nome = msg.replace("CARTA:", "")
-                        frame_dest = carte_playerD
+                    nome = msg.replace("CARTA_DX:", "")
                     
                     path = r"PNG/" + nome + ".png"
                     # Ordina a Tkinter di disegnare (nel thread principale!)
@@ -160,8 +152,7 @@ def ascolta_server():
                 # --- GESTIONE BANCO ---
                 elif "BANCO:" in msg:
                     if "retro" in msg:
-                        colore = random.choice(["nero", "rosso"])
-                        path = r"PNG/retro_" + colore + ".png"
+                        path = r"PNG/retro" + ".png"
                         # Disegna e salva come carta coperta
                         root.after(0, lambda f=carte_banco, p=path: disegna_carta_sicura(f, p, True))
                     else:
@@ -191,8 +182,6 @@ def ascolta_server():
                         root.after(0, lambda: btn_split.config(state="disabled"))
                         root.after(0, lambda: btn_rigioca.config(state="normal"))
                         
-                elif "split" in msg.lower():
-                    root.after(0, lambda: btn_split.config(state="normal"))
 
         except Exception as e:
             print("Errore ascolto:", e)
@@ -234,7 +223,6 @@ def pulisci_tavolo():
     try:
         # Pulisce le carte
         for widget in carte_playerD.winfo_children(): widget.destroy()
-        for widget in carte_playerS.winfo_children(): widget.destroy()     
         for widget in carte_banco.winfo_children(): widget.destroy()
         
         global carta_coperta_label
@@ -264,24 +252,6 @@ def rigioca():
         
 btn_rigioca.config(command=rigioca)
 
-def split():
-    try:
-        # --- CORREZIONE FONDAMENTALE ---
-        # Spegniamo subito il bottone per impedire di premerlo una seconda volta
-        btn_split.config(state="disabled") 
-        # -------------------------------
-
-        # 1. PULIZIA LOCALE (Il codice che avevi già)
-        for widget in carte_playerD.winfo_children(): 
-            widget.destroy()
-        for widget in carte_playerS.winfo_children(): 
-            widget.destroy()
-            
-        client.send("SPLIT\n".encode())
-    except Exception as e4:
-        print("ERRORE NELL'INVIO", e4)
-        
-btn_split.config(command=split)
 
 def mostra_fase_scommessa():
     # Nascondi i comandi di gioco
