@@ -32,6 +32,12 @@ root = tk.Tk()
 root.title("Poker Texano")
 root.geometry("1000x1000")
 
+# Imposta il vero schermo intero (senza barra del titolo)
+root.attributes('-fullscreen', True)
+
+# Scorciatoia comoda per uscire premendo ESC
+root.bind("<Escape>", lambda event: root.attributes('-fullscreen', False))
+
 # 2. Creare un Frame
 # bg="darkgreen" serve per vederlo chiaramente, bd=5 è il bordo
 mio_frame = tk.Frame(root, bg="darkgreen", bd=5, relief="sunken")
@@ -52,36 +58,59 @@ frame_banco.pack_propagate(False)
 
 
 # Creo i 4 frame per i 4 possibili giocatori
-frame_sotto = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=600, height=250)
+frame_sotto = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=400, height=250)
 frame_sotto.place(relx=0.5, rely=1.0, anchor=tk.S)
 frame_sotto.pack_propagate(False)
 
 
-frame_sopra = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=600, height=250)
+frame_sopra = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=400, height=250)
 frame_sopra.place(relx=0.5, rely=0.0, anchor=tk.N)
 frame_sopra.pack_propagate(False)
 
 
-frame_sinistro = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=250, height=600)
+frame_sinistro = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=250, height=400)
 frame_sinistro.place(relx=0.0, rely=0.5, anchor=tk.W)
 frame_sinistro.pack_propagate(False)
 
 
-frame_destro = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=250, height=600)
-frame_destro.place(relx=1.0, rely=0.5, anchor=tk.E)
+frame_destro = tk.Frame(mio_frame, bg="#005500", bd=5, relief="ridge", width=250, height=400)
+frame_destro.place(relx=1.0, rely=0.5, anchor=tk.E, )
 frame_destro.pack_propagate(False)
 
 
 # Creo il bottone per la puntata
-bottone_puntata = tk.Button(mio_frame, text="PUNTA", width=15, font=("Arial", 12, "bold"), bg="orange")
+bottone_puntata = tk.Button(mio_frame, text="BET", width=15, font=("Arial", 12, "bold"), bg="orange")
 bottone_puntata.place(relx=0.99, rely=0.99, anchor=tk.SE)
+bottone_puntata.config(state="disabled")
 
+# Bottone Fold
+bottone_fold = tk.Button(mio_frame, text="FOLD", width=15, font=("Arial", 12, "bold"), bg="orange")
+bottone_fold.place(relx=0.88, rely=0.99, anchor=tk.SE)
+bottone_fold.config(state="disabled")
+
+
+# Bottone Call
+bottone_call = tk.Button(mio_frame, text="CALL", width=15, font=("Arial", 12, "bold"), bg="orange")
+bottone_call.place(relx=0.88, rely=0.94, anchor=tk.SE)
+bottone_call.config(state="disabled")
+
+
+# Bottone All-in
+bottone_allin = tk.Button(mio_frame, text="ALL-IN", width=15, font=("Arial", 12, "bold"), bg="orange")
+bottone_allin.place(relx=0.99, rely=0.94, anchor=tk.SE)
+
+
+# Bottone per uscire dal gioco
+bottone_exit = tk.Button(mio_frame, text="ESCI", width=15, font=("Arial", 12, "bold"), bg="orange")
+bottone_exit.place(relx=0.99, rely=0.01, anchor=tk.NE)
 
 # Funzione di dominio della puntata
 def controlla_puntata(testo):
     if testo == "":
+        bottone_puntata.config(state="disabled")
         return True
     elif testo.isdigit():
+        bottone_puntata.config(state="normal")
         return True
     else:
         return False
@@ -92,7 +121,7 @@ validazione_puntata = root.register(controlla_puntata)
 
 # Creo l'area di testo dove scrivere la puntata
 testo_bet = tk.Entry(mio_frame, width=10, font=("Arial", 14), justify="center", validate="key", validatecommand=(validazione_puntata, '%P'))
-testo_bet.place(relx=0.01, rely=0.99, anchor=tk.SW)
+testo_bet.place(relx=0.65, rely=0.965, anchor=tk.SW)
 
 """
 def ascolta_server():
@@ -199,7 +228,7 @@ def chiudi_gioco():
     root.destroy()
     
 # Collega la funzione al click del mouse
-btn_quit.config(command=chiudi_gioco)
+bottone_exit.config(command=chiudi_gioco)
 
 
 def sto():
